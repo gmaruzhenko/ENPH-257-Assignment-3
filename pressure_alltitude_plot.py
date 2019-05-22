@@ -13,38 +13,40 @@ GRAVITY = 9.8   # m/s
 MOLAR_MASS = 28.9 / 1000    # kg/mol
 R = 8.314  # L atm / K mol
 
-MAX_HEIGHT = 1000
-
+# Vary these
+MAX_HEIGHT = 14000
 dZ = 1   #m
+
 
 def inittilize_IC():
     pressure_array[0] = START_PRESSURE
     temperature_array[0] = START_TEMP
 
 
+def update_arrays(position):
+    dP = -1 * MOLAR_MASS * GRAVITY * pressure_array[position] * dZ / (R * temperature_array[position])
+    dT = (1 - 1/GAMMA) * temperature_array[position] * dP / pressure_array[position]
+    pressure_array[position + 1] = pressure_array[position] + dP
+    temperature_array[position + 1] = temperature_array[position] + dT
+
+
 # Start code
 pressure_array = np.ones(int(MAX_HEIGHT/dZ))
 temperature_array = np.ones(int(MAX_HEIGHT/dZ))
-x_axis_for_plot = [i * dZ for i in range(0, int(MAX_HEIGHT/dZ))]
+hight_array = [i * dZ for i in range(0, int(MAX_HEIGHT/dZ))]
 
 
 inittilize_IC()
 
 index = 0
 while index * dZ < MAX_HEIGHT - 1:
-    dP = -1 * MOLAR_MASS * GRAVITY * pressure_array[index] / (R * temperature_array[index])
-    dT = (1 - 1/GAMMA) * temperature_array[index] * dP / pressure_array[index]
-    #print(dP, "and ", dT)
-    print (pressure_array[index])
-    pressure_array[index + 1] = pressure_array[index] + dP
-    temperature_array[index + 1] = temperature_array[index] + dT
+    update_arrays(index)
     index += 1
 
-plt.plot(x_axis_for_plot, pressure_array)
-plt.plot(x_axis_for_plot, temperature_array, 'ro')
-plt.title('Pressure vs Height')
-plt.xlabel('Height (m)')
+plt.plot(hight_array, pressure_array)
+#plt.plot(hight_array, temperature_array, 'red')
+plt.title('Elevation vs Atmospheric Pressure')
+plt.xlabel('Elevation above Sea Level (m)')
 plt.ylabel('Pressure (kPa)')
-#plt.legend(['theoretical', 'numerical'])
 
 plt.show()
