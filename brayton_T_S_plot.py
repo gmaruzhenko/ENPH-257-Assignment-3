@@ -12,16 +12,15 @@ p1 = 1.013
 pyro.config['unit_pressure'] = 'bar'
 pyro.config['unit_temperature'] = 'K'
 pyro.config['unit_matter'] = 'kg'
-
+pyro.config['unit_energy'] = 'kJ'
 
 T1 = 300.
-pr = 10.
+pr = 20.
 s1 = air.s(T1,p1)
-pyro.config['unit_energy'] = 'kJ'
 p2 = p1*pr
 T2 = air.T_s(s=s1,p=p2)
 wc = air.h(T2,p2) - air.h(T1,p1)
-T3 = 1400.
+T3 = 1000.
 p4 = p1
 p3 = p2
 qh = air.h(T3,p3) - air.h(T2,p2)

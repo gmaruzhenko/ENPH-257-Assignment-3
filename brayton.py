@@ -4,20 +4,21 @@
 from __future__ import print_function
 import matplotlib.pyplot as plt
 import numpy as np
+import math as math
 from scipy.integrate import simps
 from numpy import trapz
 
 # Global Constants
 GAMMA = 1.4
 R = 0.08205746   # L atm / K mol
-CP = 1.006     # kJ/kgK
+CP = 1.006 * 1000     # L*atm/kgK
 MAX_PRESSURE_RATIO = 20
 
 # Initial Conditions
 T0 = 273.15 + 10        # KELVIN
-P0 = 1  # atm
+P0 = 1.  # atm
 V0 = 773.4550236  # L fir 1kg air at stp
-N = P0 * V0 / (R * T0)
+N = P0 * V0 / (R * T0)  # mols
 
 
 def get_thermal_efficiency(p_maximum_ratio, type):
@@ -64,7 +65,16 @@ def get_thermal_efficiency(p_maximum_ratio, type):
         end = len(pressure_array)
         while index < end:
             temperature_array[index] = pressure_array[index] * volume_array[index] / (N * R)
+            index += 1
 
+    def initilize_delta_s(temperature_array, pressure_array, delta_entropy_array):
+        delta_entropy_array[0] = 0
+        index = 1
+        end = len(temperature_array)
+        while index < end :
+            delta_entropy_array[index] = CP * math.log(temperature_array[index]/temperature_array[index-1]) \
+                                         - (N * R) * math.log(pressure_array[index] / pressure_array[index-1])
+            index += 1
     # Constraints for System
     T_max = 273.15 + 1000   # KELVIN
 
@@ -92,14 +102,25 @@ def get_thermal_efficiency(p_maximum_ratio, type):
     pressure_1_2 = np.linspace(p1, p2)
     volume_1_2 = np.ones(len(pressure_1_2))
     temperature_1_2 = np.ones(len(pressure_1_2))
+    delta_s_1_2 = np.ones(len(temperature_1_2))
+
     initilize_adiabat_volume(volume_1_2, pressure_1_2, v1)
     initilize_temperature_array(pressure_1_2, volume_1_2, temperature_1_2)
+    initilize_delta_s(temperature_1_2, pressure_1_2, delta_s_1_2)
+
+    plt.plot(temperature_1_2, delta_s_1_2)
+
 
     # stage 2 - 3
     volume_2_3 = np.linspace(v2, v3)
     pressure_2_3 = np.ones(len(volume_2_3)) * p2
     temperature_2_3 = np.ones(len(pressure_2_3))
+    delta_s_2_3 = np.ones(len(temperature_1_2))
     initilize_temperature_array(pressure_2_3, volume_2_3, temperature_2_3)
+    initilize_delta_s(temperature_2_3, pressure_2_3, delta_s_2_3)
+
+    plt.plot(temperature_2_3, delta_s_2_3)
+    plt.show()
 
     # stage 3 - 4
     pressure_3_4 = pressure_1_2
@@ -145,7 +166,7 @@ def plot_thermal_efficiency_vs_pressure_ratio():
 
 
 # plot efficiency vs pressure ratio
-plot_thermal_efficiency_vs_pressure_ratio()
+get_thermal_efficiency(20, 'apple')
 
 
 
