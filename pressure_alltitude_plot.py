@@ -11,7 +11,7 @@ START_PRESSURE = 101          # kpa
 GAMMA = 1.4
 GRAVITY = 9.8   # m/s
 MOLAR_MASS = 28.9 / 1000    # kg/mol
-R = 8.314  # L atm / K mol
+R = 8.314  # J / K mol
 
 # Vary these
 MAX_HEIGHT = 14000
