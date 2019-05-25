@@ -154,36 +154,39 @@ def plot_t_s():
 
     # isobaric
     p1 = P0
-    T1 = T0
-    s1 = air.s(T1, p1)
+    t1 = T0
+    s1 = air.s(t1, p1)
     p2 = p1 * MAX_PRESSURE_RATIO
-    T2 = air.T_s(s=s1, p=p2)
-    # wc = air.h(T2,p2) - air.h(T1,p1)
-    T3 = T_MAX
+    t2 = air.T_s(s=s1, p=p2)
+    s2 =s1
+    # wc = air.h(t2,p2) - air.h(T1,p1)
+    t3 = T_MAX
     p4 = p1
     p3 = p2
-    qh = air.h(T3, p3) - air.h(T2, p2)
-    s3 = air.s(T3, p3)
+    qh = air.h(t3, p3) - air.h(t2, p2)
+    s3 = air.s(t3, p3)
     s4 = s3
-    T4 = air.T_s(s=s4, p=p4)
-    wt = air.h(T3, p3) - air.h(T4, p4)
+    t4 = air.T_s(s=s4, p=p4)
+    wt = air.h(t3, p3) - air.h(t4, p4)
 
-    T = np.linspace(T2, T3)
-    plt.plot(air.s(T=T, p=p2), T, 'r', linewidth=1.5)
-    T = np.linspace(T1, T4)
-    plt.plot(air.s(T=T, p=p1), T, 'r--', linewidth=1.5)
+    temperature_axis_array = np.linspace(t2, t3)
+    plt.plot([s1, s2], [t1, t2], 'blue', linewidth=1.5)
+    plt.plot(air.s(T=temperature_axis_array, p=p2), temperature_axis_array, 'green', linewidth=1.5)
+    plt.plot([s3, s3], [t3, t4], 'black', linewidth=1.5)
+    temperature_axis_array = np.linspace(t1, t4)
+    plt.plot(air.s(T=temperature_axis_array, p=p1), temperature_axis_array, 'red', linewidth=1.5)
 
-    plt.plot([s1, s1], [T1, T2], 'r', linewidth=1.5)
-    plt.plot([s3, s3], [T3, T4], 'r', linewidth=1.5)
+    plt.legend(['Adiabatic Compression', 'Isobaric Combustion', 'Adiabatic Compression', 'Isobaric Cooling'])
 
     plt.xlabel('Entropy, s (kJ/kg/K)')
     plt.ylabel('Temperature, T (K)')
     plt.grid('on')
-    plt.title('Brayton Cycle T-s Graphic')
+    plt.title('Brayton Cycle T-S Graphic')
     plt.show()
 
 # plot efficiency vs pressure ratio
-#main function
+# main function
+
 # plot_thermal_efficiency_vs_pressure_ratio()
 plot_t_s()
 get_thermal_efficiency(MAX_PRESSURE_RATIO, 'apple')
