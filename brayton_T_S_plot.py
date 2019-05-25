@@ -11,6 +11,8 @@ p1 = 1.013
 
 pyro.config['unit_pressure'] = 'bar'
 pyro.config['unit_temperature'] = 'K'
+pyro.config['unit_matter'] = 'kg'
+
 
 T1 = 300.
 pr = 10.
@@ -27,6 +29,7 @@ s3 = air.s(T3,p3)
 s4 = s3
 T4 = air.T_s(s=s4,p=p4)
 wt = air.h(T3,p3) - air.h(T4,p4)
+
 
 T = np.linspace(T2,T3)
 plt.plot(air.s(T=T,p=p2),T,'r',linewidth=1.5)
