@@ -3,24 +3,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+# Global Constants
+GAMMA = 1.4
+R = 0.08205746   # L atm / K mol
+CP = 1.006 * 1000     # L*atm/kgK
+MAX_PRESSURE_RATIO = 20.
+
+# Initial Conditions
+T0 = 273.15 + 10        # KELVIN
+P0 = 1.013  # atm
+V0 = 773.4550236  # L fir 1kg air at stp
+N = P0 * V0 / (R * T0)  # mols
+T_max = 273.15 + 1000   # KELVIN
+
 air = pyro.get('ig.air')
-
-Wnet = 310.
-
-p1 = 1.013
 
 pyro.config['unit_pressure'] = 'bar'
 pyro.config['unit_temperature'] = 'K'
 pyro.config['unit_matter'] = 'kg'
 pyro.config['unit_energy'] = 'kJ'
 
-T1 = 300.
-pr = 20.
+p1 = P0
+T1 = T0
+pr = MAX_PRESSURE_RATIO
 s1 = air.s(T1,p1)
 p2 = p1*pr
 T2 = air.T_s(s=s1,p=p2)
-wc = air.h(T2,p2) - air.h(T1,p1)
-T3 = 1000.
+# wc = air.h(T2,p2) - air.h(T1,p1)
+T3 = T_max
 p4 = p1
 p3 = p2
 qh = air.h(T3,p3) - air.h(T2,p2)
