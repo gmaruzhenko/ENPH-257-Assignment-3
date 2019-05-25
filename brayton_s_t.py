@@ -5,6 +5,7 @@ from __future__ import print_function
 import matplotlib.pyplot as plt
 import numpy as np
 import pyromat as pyro
+import math as math
 from scipy.integrate import simps
 from numpy import trapz
 
@@ -13,11 +14,12 @@ GAMMA = 1.4
 R = 0.08205746   # L atm / K mol
 MAX_PRESSURE_RATIO = 20
 T_MAX = 273.15 + 1000  # KELVIN
-
+# CP = 1.006 * 1000     # L*atm/kgK
+CP = 1.006              # KJ/kgK
 # Initial Conditions
 T0 = 273.15 + 10        # KELVIN
-P0 = 1  # atm
-V0 = 1   # L
+P0 = 1.  # atm
+V0 = 773.4550236  # L fir 1kg air at stp
 N = P0 * V0 / (R * T0)
 
 
@@ -38,6 +40,11 @@ def get_thermal_efficiency(p_maximum_ratio, type):
         while index < end:
             temperature_array[index] = pressure_array[index] * volume_array[index] / (N * R)
             index += 1
+    def calculate_delta_s(t1, t2, p1, p2):
+        d_s1 = CP * math.log(t2 / t1) - N * 8.314 / 1000 * math.log(p2 / p1)
+        print("delta_s = ", d_s1, "KJ")
+        return d_s1
+
 
     def efficiency_comparison():
         print("actual efficiency =", get_numerical_efficiency())
@@ -72,7 +79,6 @@ def get_thermal_efficiency(p_maximum_ratio, type):
     t1 = T0
     v1 = N * R * t1 / p1
 
-
     # stage 2
     p2 = p1 * p_maximum_ratio
     v2 = v1 * (p1/p2)**(1/GAMMA)
@@ -92,20 +98,23 @@ def get_thermal_efficiency(p_maximum_ratio, type):
     pressure_1_2 = np.linspace(p1, p2)
     volume_1_2 = np.ones(len(pressure_1_2))
     initilize_adiabat_volume(volume_1_2, pressure_1_2, v1)
+    d_s1 = calculate_delta_s(t1, t2, p1, p2)
 
     # stage 2 - 3
     volume_2_3 = np.linspace(v2, v3)
     pressure_2_3 = np.ones(len(volume_2_3)) * p2
+    d_s2 = calculate_delta_s(t2, t3, p2, p3)
 
     # stage 3 - 4
     pressure_3_4 = pressure_1_2
     volume_3_4 = np.ones(len(pressure_1_2))
     initilize_adiabat_volume(volume_3_4, pressure_3_4, v4)
+    calculate_delta_s(t3, t4, p3, p4)
 
     # stage 4 - 1
     volume_4_1 = np.linspace(v4, v1)
     pressure_4_1 = np.ones(len(volume_4_1)) * p1
-
+    calculate_delta_s(t4, t1, p4, p1)
     # uncomment to plot and show Brayton Cycle P-V
     #plot_chart()
 
@@ -136,18 +145,18 @@ def plot_thermal_efficiency_vs_pressure_ratio():
 
 
 def plot_t_s():
+    # initialize library
     air = pyro.get('ig.air')
-
     pyro.config['unit_pressure'] = 'bar'
     pyro.config['unit_temperature'] = 'K'
     pyro.config['unit_matter'] = 'kg'
     pyro.config['unit_energy'] = 'kJ'
 
+    # isobaric
     p1 = P0
     T1 = T0
-    pr = MAX_PRESSURE_RATIO
     s1 = air.s(T1, p1)
-    p2 = p1 * pr
+    p2 = p1 * MAX_PRESSURE_RATIO
     T2 = air.T_s(s=s1, p=p2)
     # wc = air.h(T2,p2) - air.h(T1,p1)
     T3 = T_MAX
@@ -177,7 +186,7 @@ def plot_t_s():
 #main function
 # plot_thermal_efficiency_vs_pressure_ratio()
 plot_t_s()
-
+get_thermal_efficiency(MAX_PRESSURE_RATIO, 'apple')
 
 
 
