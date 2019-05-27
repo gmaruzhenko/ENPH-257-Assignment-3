@@ -29,6 +29,10 @@ def update_arrays(position):
     pressure_array[position + 1] = pressure_array[position] + dP
     temperature_array[position + 1] = temperature_array[position] + dT
 
+    # at pressure 1/e of sea level
+    if 37.15 > pressure_array[index] > 37.13:
+        print(index * dZ)
+
 
 def plot_charts():
     plt.plot(hight_array, pressure_array)

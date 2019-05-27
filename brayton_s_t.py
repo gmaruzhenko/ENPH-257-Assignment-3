@@ -43,6 +43,7 @@ def get_thermal_efficiency(p_maximum_ratio, type):
     def calculate_delta_s(t1, t2, p1, p2):
         d_s1 = CP * math.log(t2 / t1) - N * 8.314 / 1000 * math.log(p2 / p1)
         print("delta_s = ", d_s1, "KJ")
+        print("temperature = ", t1)
         return d_s1
 
 
