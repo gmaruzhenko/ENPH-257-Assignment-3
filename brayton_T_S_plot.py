@@ -1,3 +1,6 @@
+#   Created by Georgiy Maruzhenko on 2019-03-16.
+#   Copyright © 2019 Georgiy Maruzhenko. All rights reserved.
+
 import pyromat as pyro
 import numpy as np
 import matplotlib.pyplot as plt
