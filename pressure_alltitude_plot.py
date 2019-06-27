@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 
 
 # Global Variables
-START_TEMP = 15 + 273.15    # k
-START_PRESSURE = 101          # kpa
+START_TEMP = -31 + 273.15    # k
+START_PRESSURE = .7          # kpa
 GAMMA = 1.4
-GRAVITY = 9.8   # m/s
+GRAVITY = 3.72   # m/s
 MOLAR_MASS = 28.9 / 1000    # kg/mol
 R = 8.314  # L atm / K mol
 
@@ -52,3 +52,5 @@ while index * dZ < MAX_HEIGHT - 1:
     index += 1
 
 plot_charts()
+
+# eyeball the 1/e
